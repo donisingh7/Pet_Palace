@@ -12,6 +12,5 @@ export default function Home() {
       <h1>Welcome to Pet Palace!</h1>
       {/* Your real homepage content */}
     </main>
-  );
-  
+  ); 
 }
