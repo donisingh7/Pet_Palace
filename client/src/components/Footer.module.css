@@ -1,0 +1,288 @@
+/* client/src/components/Footer.module.css */
+.footer {
+  background: #f9f9f9;
+  color: #333;
+  padding-top: 2rem;
+}
+
+.pageWidth {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.blocksWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.footerBlock {
+  flex: 1 1 100%;
+}
+
+@media (min-width: 640px) {
+  .footerBlock {
+    flex: 1 1 45%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .footerBlock {
+    flex: 1 1 22%;
+  }
+}
+
+.heading {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list li {
+  margin-bottom: 0.5rem;
+}
+
+.link {
+  text-decoration: none;
+  color: #333;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: #ff3e6c;
+}
+
+.downloadFooter {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.downloadFooter img {
+  height: 40px;
+  object-fit: contain;
+}
+
+.subscribe {
+  margin-top: 1rem;
+}
+
+.subscribe h5 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.emailInput {
+  flex: 1 1 200px;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.subscribeBtn {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: #ff3e6c;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.subscribeDesc {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  max-width: 400px;
+}
+
+
+.mobileSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 1) App download styling */
+.appsWrapper {
+  text-align: center;
+}
+.appsWrapper .heading {
+  margin-bottom: 0.75rem;
+}
+.appsImagesWrapper {
+  display: inline-flex;
+  gap: 1rem;
+}
+.appsImagesWrapper img {
+  height: 40px;
+  object-fit: contain;
+}
+
+/* 2) Social links */
+.socialBlock {
+  text-align: center;
+}
+.socialList {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+.socialList a {
+  text-decoration: none;
+  font-size: 1rem;
+  color: #333;
+}
+
+/* 3) Get in touch */
+.contactBlock {
+  text-align: center;
+}
+.contactList {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+}
+.contactList li {
+  margin: 0.5rem 0;
+}
+.iconAndText {
+  text-decoration: none;
+  color: #333;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+/* client/src/components/Footer.module.css */
+
+.socialList {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+.socialList a {
+  color: #333;
+  transition: color 0.2s;
+}
+.socialList a:hover {
+  color: #ff3e6c;
+}
+/* POPULAR SEARCHES SECTION */
+.footerSection {
+  background: #fff;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  margin-left: 0rem;    /* moves the list in */
+  padding-left: 0rem;
+  
+}
+
+.footerBottomMainWrapper {
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
+  padding: 0 1rem; /* optional horizontal padding */
+}
+
+.bottomMenuWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.footerTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: -1rem;
+}
+
+.customBottomMenu {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  
+}
+
+.customBottomMenu li {
+  position: relative;
+  margin: 0 10px 8px 0;
+  padding-right: 10px;
+}
+
+.customBottomMenu li::after {
+  content: "";
+  position: absolute;
+  width: 1px;
+  height: 15px;
+  background: #000;
+  right: 0;
+  top: 8px;
+  
+}
+
+.customBottomMenu li:last-child::after {
+  display: none;
+}
+
+.customBottomMenu a {
+  text-decoration: none;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.footerBottomAddressWrapper {
+  margin-top: 1.5rem;
+}
+
+.footerBottomAddressHeading {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.footerBottomAddressPara {
+  font-size: 0.875rem;
+  color: #555;
+}
+
+.textCenter {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.footerBaseLinks {
+  font-size: 0.875rem;
+  color: #777;
+}
+
+/* Responsive tweaks */
+@media (max-width: 767px) {
+  .footerBottomMainWrapper {
+    width: 100%;
+  }
+  .customBottomMenu li::after {
+    height: 10px;
+    top: 9px;
+  }
+}
