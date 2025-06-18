@@ -4,7 +4,7 @@ import styles from './Header.module.css'
 
 export default function Header({ logoSrc }) {
   return (
-    <header className={styles.huftHeader}>
+    <header className={styles.petHeader}>
       <div className={styles.topBar}>
         <p>Monsoon Essentials: Get Flat ₹200 Off!</p>
       </div>
