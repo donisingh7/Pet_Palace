@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import styles from './Header.module.css';
 import React, { useState, useRef, useEffect } from 'react';
-import { FaMapMarkerAlt, FaUser, FaShoppingCart, FaSearch, FaTimes } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaUser, FaShoppingCart, FaSearch, FaTimes, FaEllipsisH } from 'react-icons/fa';
 import NavMenu from './NavMenu'
 
 
@@ -29,6 +29,11 @@ export default function Header({ logoSrc, cartCount = 3 }) {
   const popupRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
+  // control whether the NavMenu is visible
+  const [navVisible, setNavVisible] = useState(true);
+  // 'triple' = show ellipsis; 'cross' = show ✕; null = hide toggle
+  const [togglerMode, setTogglerMode] = useState(null);
+
   // static trending list
   const trendingSearches = [
     'Dog Food',
@@ -49,6 +54,21 @@ export default function Header({ logoSrc, cartCount = 3 }) {
   const subtotal = cartItems.reduce((sum, i) => sum + i.price, 0);
   const total = Math.round(subtotal * (1 - discount));
 
+
+  useEffect(() => {
+  const onScroll = () => {
+    if (window.scrollY > 0) {
+      setNavVisible(false);
+      setTogglerMode('triple');
+    } else {
+      setNavVisible(true);
+      setTogglerMode(null);
+    }
+  };
+  window.addEventListener('scroll', onScroll);
+  return () => window.removeEventListener('scroll', onScroll);
+}, []);
+
   // clear celebration after 2s
   useEffect(() => {
     if (showCelebration) {
@@ -58,7 +78,8 @@ export default function Header({ logoSrc, cartCount = 3 }) {
   }, [showCelebration]);
 
   return (
-    <header className={styles.petHeader}>
+    <>
+    <header className={styles.stickyHeader}>
       {/* Top promo bar */}
       <div className={styles.topBar}>
         <p>Monsoon Essentials: Get Flat ₹200 Off!</p>
@@ -66,6 +87,24 @@ export default function Header({ logoSrc, cartCount = 3 }) {
 
       {/* Main header */}
       <div className={styles.main}>
+
+        {togglerMode && (
+          <button
+            className={styles.navToggler}
+            onClick={() => {
+              if (togglerMode === 'triple') {
+                setNavVisible(true);
+                setTogglerMode('cross');
+              } else {
+                setNavVisible(false);
+                setTogglerMode('triple');
+              }
+            }}
+            aria-label="Toggle navigation"
+          >
+            {togglerMode === 'triple' ? <FaEllipsisH /> : <FaTimes />}
+          </button>
+        )}
         {/* Logo */}
         <div className={styles.logo}>
           <Link href="/" aria-label="Home">
@@ -417,10 +456,10 @@ export default function Header({ logoSrc, cartCount = 3 }) {
         </div>
         </div>
       </div>
-
-      {/* Navigation links */}
-        <NavMenu />
     </header>
+       {/* NavMenu now scrolls away with the page */}
+      {navVisible && <NavMenu />}
+          </>
   );
 }
 
