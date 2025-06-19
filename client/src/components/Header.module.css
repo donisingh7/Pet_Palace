@@ -10,18 +10,30 @@
 
 /* Top promotional bar */
 .topBar {
-  background: #f5f5f5;
+  background: #454ad4;
   text-align: center;
+  color: #fff;
   padding: 4px 0;
   font-size: 0.875rem;
+  padding-top:8px;
+  padding-bottom:8px;
+  font-weight: bold;
   
+}
+
+.navLink:hover {
+  color: #ff3e6c;
+}
+.action:hover {
+  color: #ff3e6c;
 }
 
 /* Main header area */
 .main {
+  max-width: 1200px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
-  margin-left:50px;
   justify-content: space-between;
   padding: 0.5rem 1rem;
 }
@@ -131,4 +143,333 @@
 .navLink:focus {
   outline: 2px solid #ff3e6c;
   outline-offset: 2px;
+}
+
+/* Wraps the user icon so we can position the popup */
+.userIconWrapper {
+  position: relative;
+  
+}
+
+/* The little popup box */
+.signupPopup {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  white-space: nowrap;
+  z-index: 200;
+}
+
+/* Style the link inside */
+.signupPopup a {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* Wraps the location icon + text */
+.locationWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* After submit, shows pin and estimate */
+.locationInfo {
+  display: flex;
+  flex-direction: column;
+  margin-left: 0.5rem;
+}
+.locationText {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.estimateText {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+/* The popup form */
+.locationPopup {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  z-index: 200;
+}
+.locationInput {
+  width: 100px;
+  padding: 0.25rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+}
+.locationPopup button {
+  padding: 0.25rem 0.5rem;
+  background: #ff3e6c;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.locationPopup button:focus {
+  outline: 2px solid #ff3e6c;
+  outline-offset: 2px;
+}
+/* Header inside the change form */
+.changeHeader {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  color: #333;
+}
+.changeHeader span + span {
+  margin-top: 0.25rem;
+}
+
+/* small circular user photo */
+.userPhoto {
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* the popup container */
+.loginPopup {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 300;
+  width: 200px;
+}
+
+/* tabs */
+.loginTabs {
+  display: flex;
+  margin-bottom: 0.5rem;
+}
+.loginTabs button {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+.activeTab {
+  border-bottom: 2px solid #ff3e6c;
+  font-weight: bold;
+}
+
+/* inputs */
+.loginInput {
+  width: 100%;
+  padding: 0.4rem;
+  margin-bottom: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+/* buttons */
+.loginButton {
+  width: 100%;
+  padding: 0.5rem;
+  background: #ff3e6c;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+.loginButton:focus {
+  outline: 2px solid #ff3e6c;
+  outline-offset: 2px;
+}
+
+
+/* PROFILE MENU */
+.profilePopup {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  width: 200px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 300;
+}
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.profileHeader img {
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.profileName {
+  font-weight: bold;
+  margin: 0;
+}
+
+.profileType {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0;
+}
+
+.profileOptions {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.profileOptions li + li {
+  margin-top: 0.25rem;
+}
+
+.profileOptions button {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 0.25rem 0;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+
+.profileOptions button:hover {
+  color: #ff3e6c;
+}
+
+/* Cart wrapper matches other icons */
+.cartWrapper {
+  position: relative;
+  margin-left: 1rem;
+}
+
+/* Cart popup panel */
+.cartPopup {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 260px;
+  background: #fff;
+  overflow: hidden;    
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 300;
+}
+
+/* Confetti effect */
+.confetti {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+  animation: fadeOut 2s forwards;
+}
+
+/* fade-out animation */
+@keyframes fadeOut {
+  to { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+}
+
+/* Cart items list */
+.cartItems {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.5rem;
+}
+.cartItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.cartItem img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  margin-right: 0.5rem;
+}
+.itemName {
+  font-size: 0.875rem;
+  margin: 0;
+}
+.itemPrice {
+  font-size: 0.75rem;
+  color: #666;
+  margin: 0;
+}
+
+/* Totals & promo */
+.cartTotal {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+.promoSection {
+  display: flex;
+  align-items: center;  
+  margin-bottom: 0.5rem;
+}
+.promoInput {
+  flex: 1;
+  min-width: 0;  
+  padding: 0.25rem;
+  border: 1px solid #ddd;
+  border-radius: 4px 0 0 4px;
+}
+.promoButton {
+  padding: 0.25rem 0.5rem;
+  background: #ff3e6c;
+  color: #fff;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+}
+
+/* Checkout & address */
+.checkoutButton {
+  width: 100%;
+  padding: 0.5rem;
+  background: #ff3e6c;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+}
+.addressSection {
+  font-size: 0.875rem;
 }
