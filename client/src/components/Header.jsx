@@ -5,6 +5,7 @@ import Link from 'next/link';
 import styles from './Header.module.css';
 import React, { useState, useRef, useEffect } from 'react';
 import { FaMapMarkerAlt, FaUser, FaShoppingCart, FaSearch, FaTimes } from 'react-icons/fa';
+import NavMenu from './NavMenu'
 
 
 export default function Header({ logoSrc, cartCount = 3 }) {
@@ -26,6 +27,16 @@ export default function Header({ logoSrc, cartCount = 3 }) {
   const [discount, setDiscount] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
   const popupRef = useRef(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  // static trending list
+  const trendingSearches = [
+    'Dog Food',
+    'Cat Toys',
+    'Grooming',
+    'Leashes',
+    'Vacuum Cleaners'
+  ];
     // right after your useState declarations
   const sampleUserPhoto = '/doni.jpeg';  // URL into /public folder
    // sample cart items
@@ -68,16 +79,70 @@ export default function Header({ logoSrc, cartCount = 3 }) {
           </Link>
         </div>
 
-        {/* Search */}
-        <form role="search" className={styles.search}>
+       {/* Search */}
+        <form
+          role="search"
+          className={styles.searchWrapper}
+          onSubmit={e => {
+            e.preventDefault();
+            setShowSuggestions(false);
+          }}
+        >
+          {/* left icon */}
+          <div className={styles.searchIcon}>
+            <FaSearch />
+          </div>
+
+          {/* text input */}
           <input
             type="text"
             placeholder="Search for products, brands and more"
             aria-label="Search products"
-          />
-          <button type="submit" aria-label="Submit search">
-            <FaSearch />
-          </button>
+            className={styles.searchInput}
+            value={searchQuery}
+           onChange={e => setSearchQuery(e.target.value)}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
+         />
+
+         {/* clear-icon */}
+          {searchQuery && (
+            <div
+              className={styles.clearIcon}
+              onClick={() => setSearchQuery('')}
+           >
+              <FaTimes />
+           </div>
+          )}
+
+          {/* suggestions dropdown */}
+         {showSuggestions && (
+            <ul className={styles.suggestionsDropdown}>
+              {(searchQuery
+                ? trendingSearches.filter(item =>
+                    item
+                     .toLowerCase()
+                      .includes(searchQuery.toLowerCase())
+                  )
+                : trendingSearches
+              ).map(term => (
+                <li
+                  key={term}
+                  className={styles.suggestionItem}
+                  onMouseDown={() => {
+                    setSearchQuery(term);
+                    setShowSuggestions(false);
+                  }}
+                >
+                  {term}
+                </li>
+              )
+            )
+          
+          }
+          
+            </ul>
+          )}
         </form>
 
         {/* Action icons */}
@@ -354,22 +419,7 @@ export default function Header({ logoSrc, cartCount = 3 }) {
       </div>
 
       {/* Navigation links */}
-      <nav className={styles.nav}>
-        <ul className={styles.navList}>
-          <li className={styles.navItem}>
-            <Link href="/dogs" className={styles.navLink}>Dogs</Link>
-          </li>
-          <li className={styles.navItem}>
-            <Link href="/cats" className={styles.navLink}>Cats</Link>
-          </li>
-          <li className={styles.navItem}>
-            <Link href="/small-animals" className={styles.navLink}>Small Animals</Link>
-          </li>
-          <li className={styles.navItem}>
-            <Link href="/pet-lovers" className={styles.navLink}>Pet Lovers</Link>
-          </li>
-        </ul>
-      </nav>
+        <NavMenu />
     </header>
   );
 }

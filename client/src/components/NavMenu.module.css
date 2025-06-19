@@ -1,0 +1,26 @@
+.nav {
+  border-top: 1px solid #eee;
+  background: #e0e6c2e0;
+}
+.navList {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  overflow-x: auto;
+}
+.navItem + .navItem {
+  margin-left: 1.5rem;
+}
+.navLink {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+.navLink:hover {
+  color: #8e3eff;
+}
+.navLink:focus {
+  outline: 2px solid #ff3e6c;
+  outline-offset: 2px;
+}

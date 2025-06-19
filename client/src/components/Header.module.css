@@ -473,3 +473,70 @@
 .addressSection {
   font-size: 0.875rem;
 }
+/* search wrapper with focus animation */
+.searchWrapper {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  max-width: 500px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
+.searchWrapper:focus-within {
+  border-color: #ff3e6c;
+}
+
+/* left-edge search icon */
+.searchIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ff3e6c;
+  color: #fff;
+  padding: 0.75rem;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  align-self: stretch;
+}
+
+/* main text input */
+.searchInput {
+  flex: 1;
+  border: none;
+  padding: 0.5rem;
+  outline: none;
+}
+
+/* clear (×) button on right */
+.clearIcon {
+  position: absolute;
+  right: 0.5rem;
+  cursor: pointer;
+  color: #666;
+}
+
+/* suggestions dropdown */
+.suggestionsDropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 300;
+}
+
+/* each suggestion */
+.suggestionItem {
+  padding: 0.5rem;
+  cursor: pointer;
+}
+.suggestionItem:hover {
+  background: #f5f5f5;
+}
