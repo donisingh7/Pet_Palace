@@ -1,0 +1,60 @@
+.wrapper {
+    background: #84bcec;
+    padding: 1rem 0;
+    margin-bottom: 2rem ;
+    
+  }
+  
+  .inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+  
+  .card {
+    display: flex;
+    align-items: center;
+    width: 22%;        /* roughly 4 across; adjust as needed */
+    min-width: 180px;   /* ensure breathing room on mobile */
+    margin: 0.5rem 0;
+  }
+  
+  .icon {
+    flex-shrink: 0;
+    
+  }
+  
+  .text {
+    margin-left: 0.75rem;
+  }
+  
+  .title {
+    font-family: 'Gotham Rounded', sans-serif;
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 1rem;
+    margin: 0;
+  }
+  
+  .subtitle {
+    font-family: 'Gotham Rounded Light', sans-serif;
+    font-weight: 600;
+    color: #000000;
+    font-size: 0.875rem;
+    margin: 0.25rem 0 0;
+  }
+  
+  /* Responsive: two columns on small screens */
+  @media (max-width: 768px) {
+    .inner {
+      justify-content: space-between;
+    }
+    .card {
+      width: 45%;
+      
+    }
+  }
+
+  

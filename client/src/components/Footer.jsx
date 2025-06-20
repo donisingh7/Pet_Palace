@@ -3,12 +3,14 @@ import React from 'react';
 import FollowUs from './FollowUs'
 import styles from './Footer.module.css';
 import {FaInstagram,FaFacebookF,FaTwitter,FaYoutube,FaLinkedinIn} from 'react-icons/fa';
-
+import FooterTopIcons from './FooterTopIcons'
 
 export default function Footer() {
   return (
     <footer className={styles.footer}>
       <FollowUs />
+
+      <FooterTopIcons />
       <div className={styles.contentTop + ' ' + styles.pageWidth}>
         <div className={styles.blocksWrapper}>
           {/* ONLINE SHOPPING */}
