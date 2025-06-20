@@ -1,3 +1,4 @@
+import PopularCategories from "@/components/PopularCategories";
 import Image from "next/image";
 import BannerSlider from '../components/BannerSlider';    
 export default function Home() {
@@ -9,7 +10,7 @@ export default function Home() {
   return (
     <main>
        <BannerSlider images={banners} interval={5000} transition={600} />
-      <h1>Welcome to Pet Palace!</h1>
+       <PopularCategories />
       {/* Your real homepage content */}
     </main>
   ); 

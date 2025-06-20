@@ -1,10 +1,14 @@
 // client/src/components/Footer.jsx
 import React from 'react';
+import FollowUs from './FollowUs'
 import styles from './Footer.module.css';
 import {FaInstagram,FaFacebookF,FaTwitter,FaYoutube,FaLinkedinIn} from 'react-icons/fa';
+
+
 export default function Footer() {
   return (
     <footer className={styles.footer}>
+      <FollowUs />
       <div className={styles.contentTop + ' ' + styles.pageWidth}>
         <div className={styles.blocksWrapper}>
           {/* ONLINE SHOPPING */}
@@ -197,6 +201,7 @@ export default function Footer() {
               </div>
             </div>
           </div>
+          
     </footer>
   );
 }

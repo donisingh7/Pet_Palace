@@ -2,6 +2,7 @@ import './globals.css'
 import Header from '../components/Header'
 import BannerSlider from '../components/BannerSlider';  
 import Footer from '../components/Footer'   // if you have one
+import ReviewCarousel from "@/components/ReviewCarousel";
 
 
  export const metadata = {
@@ -15,8 +16,9 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
          <Header logoSrc="/pet_palace.png" />      {/* ← yahan dikh raha hoga */}
-          
+         
         <main>{children}</main>
+        <ReviewCarousel />
         <Footer />
       </body>
     </html>

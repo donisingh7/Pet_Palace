@@ -1,0 +1,82 @@
+.followUs {
+    text-align: center;
+    margin-top: 0rem;
+    margin-bottom: 5rem;
+  }
+  .heading {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+  }
+  .icons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  .icons a {
+    color: #555;
+    font-size: 1.2rem;
+    transition: color 0.2s;
+  }
+  .icons a:hover {
+    color: #ff3e6c;
+  }
+  
+  .banner {
+    width: 100%;
+    /* full viewport height—you can adjust to e.g. 300px if you prefer */
+    height: 100vh;    
+    margin-bottom: 2 rem;
+    margin-top: 1.5 rem;               
+    background: url('/follow-bg.png') center/cover no-repeat;
+    position: relative;
+  } 
+  
+  
+  /* style each icon */
+  .iconOverlay a {
+    color: #fff;
+    font-size: 8.5rem;
+    transition: color 0.2s, transform 0.2s;
+  }
+  
+  .iconOverlay a:hover {
+    color: #ff3e6c;
+    transform: scale(1.1);
+  }
+  
+  /* common icon style */
+.icon {
+    position: absolute;   /* allows free placement */
+    color: #fff;
+    font-size: 2.5rem;
+    transition: color 0.2s, transform 0.2s;
+  }
+  .icon:hover {
+    color: #ff3e6c;
+    transform: scale(1.1);
+  }
+  
+  /* now place each one by tweaking top/left */
+  .instagramIcon {
+    top: 70%;    /* 20% down from the top of the banner */
+    left: 3.5%;   /* 15% across from the left edge */
+  }
+  .twitterIcon {
+    top: 70%;
+    left: 26%;
+  }
+  .facebookIcon {
+    top: 70%;
+    left: 45%;
+  }
+  .linkedinIcon {
+    top: 70%;
+    left: 65%;
+  }
+  .youtubeIcon {
+    top: 70%;
+    left: 85%;
+  }
+  

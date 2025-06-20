@@ -1,6 +1,11 @@
 .nav {
   border-top: 1px solid #eee;
   background: #e0e6c2e0;
+  overflow: visible; 
+  position: relative;      /* ← add */
+  overflow: visible;       /* ← ensure child can overflow */
+  border-top: 1px solid #eee;
+  background: #e0e6c2e0;
 }
 .navList {
   display: flex;
@@ -8,9 +13,18 @@
   margin: 0;
   padding: 0.5rem 1rem;
   overflow-x: auto;
+  justify-content: center; 
+  width:100%;
+  overflow: visible; 
+}
+
+/* make each nav item a positioning context */
+.navItem {
+  position: relative;
 }
 .navItem + .navItem {
-  margin-left: 1.5rem;
+  margin-left: 3rem;
+  
 }
 .navLink {
   text-decoration: none;
@@ -23,4 +37,42 @@
 .navLink:focus {
   outline: 2px solid #ff3e6c;
   outline-offset: 2px;
+}
+/* hide submenu by default */
+.dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;                  /* full viewport width */
+    max-width: 100%;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    list-style: none;
+    padding: 0.5rem 0;
+    min-width: 160px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 200;
+  }
+
+  .dropdownLink {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #333;
+    text-decoration: none;
+    font-size: 0.875rem;
+  }
+
+  .dropdownLink:hover,
+  .dropdownLink:focus {
+    background: #f5f5f5;
+    color: #ff3e6c;
+  }
+
+/* show submenu on hover or focus */
+.navItem:hover > .dropdown,
+.navItem:focus-within > .dropdown {
+  display: block;
 }
