@@ -33,8 +33,12 @@
     border-radius: 8px;
     cursor: pointer;
   }
-  .catImg {
-    border-radius: 50%;
+/* make the img fill that circle without distortion */
+.catImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
   }
   .cardLabel {
     margin-top: 0.5rem;
@@ -63,4 +67,10 @@
     font-weight: bold;
     color: #ff3e6c;
   }
-  
+  .catImgWrapper {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto;           /* center horizontally */
+  }

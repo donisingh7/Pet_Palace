@@ -231,13 +231,15 @@ export default function EcommerceExplorer() {
               className={styles.card}
               onClick={() => handleCatClick(c.key)}
             >
-              <Image
-                src={c.img}
-                alt={c.label}
-                width={120}
-                height={120}
-                className={styles.catImg}
-              />
+             <div className={styles.catImgWrapper}>
+            <Image
+            src={c.img}
+            alt={c.label}
+            width={120}
+            height={120}
+            className={styles.catImg}
+           />
+      </div>
               <div className={styles.cardLabel}>{c.label}</div>
             </div>
           ))}
