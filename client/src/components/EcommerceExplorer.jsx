@@ -6,9 +6,9 @@ import styles from "./EcommerceExplorer.module.css";
 const categories = [
   { key: "food",    label: "Dog & Cat Food", img: "/categories/food.png" },
   { key: "toys",    label: "Dog & Cat Toys", img: "/categories/toys.png" },
-  { key: "groom",   label: "Grooming",        img: "/categories/groom.png" },
-  { key: "dclothes",label: "Dog Clothes",     img: "/categories/dclothes.png" },
-  { key: "cclothes",label: "Cat Clothes",     img: "/categories/cclothes.png" },
+  { key: "groom",   label: "Grooming",        img: "/categories/grooming.gif" },
+  { key: "dclothes",label: "Dog Clothes",     img: "/categories/dclothes.gif" },
+  { key: "cclothes",label: "Cat Clothes",     img: "/categories/cclothes.gif" },
   { key: "pharma",  label: "Pharmacy",        img: "/categories/pharma.png" },
 ];
 
@@ -17,7 +17,7 @@ const productsByCat = {
     {
       id: 1,
       name: "Chicken & Rice Adult Dog Food",
-      img: "/products/chicken-rice.png",
+      img: "/products/chicken-rice.gif",
       price: 1299,
       desc: "High-protein formula for adult dogs",
     },
