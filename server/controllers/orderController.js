@@ -1,3 +1,4 @@
+// server/controllers/orderController.js
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const Order = require('../models/Order');
@@ -5,66 +6,62 @@ const Order = require('../models/Order');
 exports.checkout = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
-
   try {
     const { userId, referralCode } = req.body;
 
-    // Fetch user & cart
     const user = await User.findById(userId)
-      .populate('cart.product')
+      .populate('cart.product referredBy')
       .session(session);
-    if (!user) return res.status(404).json({ error: 'User not found' });
+    if (!user) throw new Error('User not found');
 
-    // Find referrer
-    const referrer = referralCode
-      ? await User.findOne({ referralCode }).session(session)
-      : null;
+    const subtotal = user.cart.reduce(
+      (sum, item) => sum + item.qty * item.product.price,
+      0
+    );
 
-    const canUseReferral = referrer && !user.referredBy && !referrer._id.equals(user._id);
-
-    // Calculate subtotal
-    let subtotal = 0;
-    user.cart.forEach(item => {
-      subtotal += item.qty * item.product.price;
-    });
-
-    const discount = canUseReferral ? subtotal * 0.10 : 0;
-    const total = subtotal - discount;
-
-    // Apply referral
-    if (canUseReferral) {
-      user.referredBy = referrer._id;
-      await user.save({ session });
+    let discount = 0;
+    let referrer = null;
+    if (referralCode && !user.referredBy) {
+      referrer = await User.findOne({ referralCode }).session(session);
+      if (referrer && !referrer._id.equals(user._id)) {
+        user.referredBy = referrer._id;
+        discount = subtotal * 0.10; // 10%
+      }
     }
 
-    // Create order
+    const total = subtotal - discount;
+
     const order = await Order.create(
-      [
-        {
-          user: user._id,
-          items: user.cart.map(it => ({
-            product: it.product._id,
-            qty: it.qty,
-            priceAtPurchase: it.product.price
-          })),
-          subtotal,
-          discount,
-          total,
-          usedReferral: canUseReferral,
-          referralUsedBy: canUseReferral ? referrer._id : null
-        }
-      ],
+      [ {
+        user: user._id,
+        usedReferral: !!referrer,
+        referralUsedBy: referrer ? referrer._id : null,
+        items: user.cart.map(item => ({
+          product: item.product._id,
+          qty: item.qty,
+          priceAtPurchase: item.product.price
+        })),
+        subtotal,
+        discount,
+        total,
+      } ],
       { session }
     );
 
-    // Give coins: 10% to buyer, 10% to referrer
-    if (canUseReferral) {
-      const coinAmount = subtotal * 0.10;
-      await User.findByIdAndUpdate(user._id, { $inc: { walletCoins: coinAmount } }, { session });
-      await User.findByIdAndUpdate(referrer._id, { $inc: { walletCoins: coinAmount } }, { session });
+    if (referrer) {
+      console.log('💰 Applying wallets, discount:', discount);
+      await User.findByIdAndUpdate(
+        user._id,
+        { $inc: { walletCoins: discount } },
+        { session }
+      );
+      await User.findByIdAndUpdate(
+        referrer._id,
+        { $inc: { walletCoins: discount } },
+        { session }
+      );
     }
 
-    // Clear cart
     await User.findByIdAndUpdate(user._id, { cart: [] }, { session });
 
     await session.commitTransaction();
@@ -75,6 +72,6 @@ exports.checkout = async (req, res) => {
     await session.abortTransaction();
     session.endSession();
     console.error('OrderController.checkout error:', err);
-    return res.status(500).json({ error: 'Checkout failed' });
+    return res.status(500).json({ error: err.message || 'Checkout failed' });
   }
 };
