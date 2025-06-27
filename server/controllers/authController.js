@@ -21,7 +21,9 @@ exports.login = async (req, res) => {
   return res.json({
     userId: user._id,
     name: user.name,
-    imageUrl: user.imageUrl,   // ensure you seeded/added this field
+    mobile: user.phone,
+    email: user.email,           // if applicable
+    imageUrl: user.photoUrl,     // ensure this exists
     referralCode: user.referralCode,
     walletCoins: user.walletCoins
   });
