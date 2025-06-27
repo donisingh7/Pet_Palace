@@ -1,7 +1,7 @@
 import PopularCategories from "@/components/PopularCategories";
 import Image from "next/image";
 import BlogSection from '@/components/BlogSection';
-
+//import ReviewCarousel from "@/components/ReviewCarousel";
 import PendulumDisplay from "@/components/PendulumDisplay";
 import BannerSlider from '../components/BannerSlider';   
 import OffersSection from "@/components/OffersSection"; 

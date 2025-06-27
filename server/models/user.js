@@ -1,65 +1,20 @@
-// // server/models/User.js
-// import mongoose from 'mongoose';
-// import bcrypt   from 'bcryptjs';
-
-// const userSchema = new mongoose.Schema({
-//   name: {
-//     type:     String,
-//     required: true,
-//   },
-//   email: {
-//     type:     String,
-//     required: true,
-//     unique:   true,
-//   },
-//   password: {
-//     type:     String,
-//     required: true,
-//   },
-//   isAdmin: {
-//     type:    Boolean,
-//     default: false,
-//   }
-// }, {
-//   timestamps: true
-// });
-
-// // Password hash middleware
-// userSchema.pre('save', async function (next) {
-//   if (!this.isModified('password')) {
-//     return next();
-//   }
-//   const salt = await bcrypt.genSalt(10);
-//   this.password = await bcrypt.hash(this.password, salt);
-//   next();
-// });
-
-// // Password match method
-// userSchema.methods.matchPassword = async function (enteredPassword) {
-//   return await bcrypt.compare(enteredPassword, this.password);
-// };
-
-// const User = mongoose.model('User', userSchema);
-// export default User;
-
-// 1. Import mongoose
 const mongoose = require('mongoose');
+const { customAlphabet } = require('nanoid');
+const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 8);
 
-// 2. Schema define karo
 const UserSchema = new mongoose.Schema({
-  referredBy: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Doctor',    // populate ke liye reference
-    default: null 
+  // … existing fields …
+  referralCode: {
+    type: String,
+    unique: true,
+    default: () => nanoid()
+  },
+  referredBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
   },
   walletCoins: { type: Number, default: 0 },
-  isGuest:      { type: Boolean, default: true },
-  cart: [{
-    product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-    qty:     { type: Number, default: 1 }
-  }]
+  // … cart, isGuest …
 }, { timestamps: true });
-
-// 3. Model compile karo (agar pehle se na bani ho)
-module.exports = mongoose.models.User 
-  || mongoose.model('User', UserSchema);
+module.exports = mongoose.models.User || mongoose.model('User', UserSchema);

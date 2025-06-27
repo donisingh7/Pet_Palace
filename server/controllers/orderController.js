@@ -37,12 +37,12 @@ exports.checkout = async (req, res) => {
 
     // 4. Doctor को reward दो
     if (user.referredBy) {
-      await Doctor.findByIdAndUpdate(
-        user.referredBy._id,
-        { $inc: { walletCoins: subtotal * 0.10 } },
-        { session }
-      );
-    }
+   await User.findByIdAndUpdate(
+     user.referredBy,
+     { $inc: { walletCoins: subtotal * 0.05 } },
+     { session }
+   );
+ }
 
     // 5. User.cart clear करो
     await User.findByIdAndUpdate(userId, { cart: [] }, { session });
