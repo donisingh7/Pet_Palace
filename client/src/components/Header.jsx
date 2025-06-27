@@ -1,75 +1,75 @@
-"use client";
-// client/src/components/Header.jsx
-import Image from 'next/image';
-import Link from 'next/link';
-import styles from './Header.module.css';
+'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import { FaMapMarkerAlt, FaUser, FaShoppingCart, FaSearch, FaTimes, FaEllipsisH } from 'react-icons/fa';
-import NavMenu from './NavMenu'
+import Link from 'next/link';
+import Image from 'next/image';
+import {
+  FaMapMarkerAlt,
+  FaUser,
+  FaShoppingCart,
+  FaSearch,
+  FaEllipsisH,
+  FaTimes,
+} from 'react-icons/fa';
+import NavMenu from './NavMenu';
+import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 
+export default function Header({ logoSrc }) {
+  /* ========== CONTEXT ========== */
+  const { user, logout } = useAuth();
+  const { cart } = useCart();
 
-export default function Header({ logoSrc, cartCount = 3 }) {
-  const [showSignupPopup, setShowSignupPopup] = useState(false);
-  const [showLocationPopup, setShowLocationPopup] = useState(false);
-  const [enteredPin, setEnteredPin] = useState('');
-  const [locationPin, setLocationPin] = useState('');
-  const [deliveryEstimate, setDeliveryEstimate] = useState('');
-  const [loginMethod, setLoginMethod] = useState('otp');
-  const [mobileInput, setMobileInput] = useState('');
-  const [idInput, setIdInput] = useState('');
-  const [pwInput, setPwInput] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userPhoto, setUserPhoto] = useState(null);
-  const [localCartCount, setLocalCartCount] = useState(cartCount);
+  /* ========== STATE ========== */
+  // cart drawer
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [promoCode, setPromoCode] = useState('');
-  const [isPromoApplied, setIsPromoApplied] = useState(false);
   const [discount, setDiscount] = useState(0);
   const [showCelebration, setShowCelebration] = useState(false);
-  const popupRef = useRef(null);
+  const subtotal = cart.reduce(
+    (s, i) => s + i.qty * i.product.price,
+    0
+  );
+  const total = Math.round(subtotal * (1 - discount));
+
+  // search
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
-  // control whether the NavMenu is visible
-  const [navVisible, setNavVisible] = useState(true);
-  // 'triple' = show ellipsis; 'cross' = show ✕; null = hide toggle
-  const [togglerMode, setTogglerMode] = useState(null);
-
-  // static trending list
   const trendingSearches = [
     'Dog Food',
     'Cat Toys',
     'Grooming',
     'Leashes',
-    'Vacuum Cleaners'
+    'Vacuum Cleaners',
   ];
-    // right after your useState declarations
-  const sampleUserPhoto = '/doni.jpeg';  // URL into /public folder
-   // sample cart items
-  const cartItems = [
-    { id:1, name:'Dog Shampoo', img:'/shampoo_dog.png', price:1599 },
-    { id:2, name:'Cleaning Wipe', img:'/cleaning_wipe.png', price:1799 },
-    { id:3, name:'Comb', img:'/comb.png', price:599 },
-    { id:4, name:'Cat Grooming Kit', img:'/gromingcat.png', price:649 },
-  ];
-  const subtotal = cartItems.reduce((sum, i) => sum + i.price, 0);
-  const total = Math.round(subtotal * (1 - discount));
 
+  // location
+  const popupRef = useRef();
+  const [enteredPin, setEnteredPin] = useState('');
+  const [locationPin, setLocationPin] = useState('');
+  const [deliveryEstimate, setDeliveryEstimate] = useState('');
+  const [showLocationPopup, setShowLocationPopup] = useState(false);
 
+  // profile dropdown
+  const [showProfilePopup, setShowProfilePopup] = useState(false);
+
+  // nav toggle on scroll (mobile)
+  const [navVisible, setNavVisible] = useState(true);
+  const [togglerMode, setTogglerMode] = useState(null);
   useEffect(() => {
-  const onScroll = () => {
-    if (window.scrollY > 0) {
-      setNavVisible(false);
-      setTogglerMode('triple');
-    } else {
-      setNavVisible(true);
-      setTogglerMode(null);
-    }
-  };
-  window.addEventListener('scroll', onScroll);
-  return () => window.removeEventListener('scroll', onScroll);
-}, []);
+    const onScroll = () => {
+      if (window.scrollY > 0) {
+        setNavVisible(false);
+        setTogglerMode('triple');
+      } else {
+        setNavVisible(true);
+        setTogglerMode(null);
+      }
+    };
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-  // clear celebration after 2s
+  // celebration timeout
   useEffect(() => {
     if (showCelebration) {
       const t = setTimeout(() => setShowCelebration(false), 2000);
@@ -77,141 +77,102 @@ export default function Header({ logoSrc, cartCount = 3 }) {
     }
   }, [showCelebration]);
 
+  /* ========== RENDER ========== */
   return (
     <>
-    <header className={styles.stickyHeader}>
-      {/* Top promo bar */}
-      <div className={styles.topBar}>
-        <p>Monsoon Essentials: Get Flat ₹200 Off!</p>
-      </div>
+      <header className="sticky top-0 z-50 bg-white shadow">
+        {/* promo bar */}
+        <div className="bg-purple-600 text-white text-center py-1 text-sm">
+          Monsoon Essentials: Get Flat ₹200 Off!
+        </div>
 
-      {/* Main header */}
-      <div className={styles.main}>
-
-        {togglerMode && (
-          <button
-            className={styles.navToggler}
-            onClick={() => {
-              if (togglerMode === 'triple') {
-                setNavVisible(true);
-                setTogglerMode('cross');
-              } else {
-                setNavVisible(false);
-                setTogglerMode('triple');
+        {/* main bar */}
+        <div className="flex items-center justify-between px-6 py-4">
+          {/* nav toggler (mobile) */}
+          {togglerMode && (
+            <button
+              className="text-gray-700 md:hidden"
+              aria-label="Toggle navigation"
+              onClick={() =>
+                togglerMode === 'triple'
+                  ? (setNavVisible(true), setTogglerMode('cross'))
+                  : (setNavVisible(false), setTogglerMode('triple'))
               }
-            }}
-            aria-label="Toggle navigation"
-          >
-            {togglerMode === 'triple' ? <FaEllipsisH /> : <FaTimes />}
-          </button>
-        )}
-        {/* Logo */}
-        <div className={styles.logo}>
-          <Link href="/" aria-label="Home">
+            >
+              {togglerMode === 'triple' ? (
+                <FaEllipsisH className="w-5 h-5" />
+              ) : (
+                <FaTimes className="w-5 h-5" />
+              )}
+            </button>
+          )}
+
+          {/* logo */}
+          <Link href="/">
             <Image
               src={logoSrc}
               alt="Pet Palace Logo"
               width={120}
               height={40}
               priority
+              className="cursor-pointer"
             />
           </Link>
-        </div>
 
-       {/* Search */}
-        <form
-          role="search"
-          className={styles.searchWrapper}
-          onSubmit={e => {
-            e.preventDefault();
-            setShowSuggestions(false);
-          }}
-        >
-          {/* left icon */}
-          <div className={styles.searchIcon}>
-            <FaSearch />
+          {/* search */}
+          <div className="flex items-center flex-1 mx-8 max-w-xl relative">
+            <FaSearch className="text-gray-500 mr-2" />
+            <input
+              type="text"
+              placeholder="Search for products, brands and more"
+              className="w-full border-b focus:outline-none py-1"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setShowSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+            />
+            {showSuggestions && (
+              <ul className="absolute top-full left-0 right-0 bg-white border mt-1 z-20 max-h-48 overflow-auto shadow">
+                {(searchQuery
+                  ? trendingSearches.filter((t) =>
+                      t.toLowerCase().includes(searchQuery.toLowerCase())
+                    )
+                  : trendingSearches
+                ).map((term) => (
+                  <li
+                    key={term}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    onMouseDown={() => {
+                      setSearchQuery(term);
+                      setShowSuggestions(false);
+                    }}
+                  >
+                    {term}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
-          {/* text input */}
-          <input
-            type="text"
-            placeholder="Search for products, brands and more"
-            aria-label="Search products"
-            className={styles.searchInput}
-            value={searchQuery}
-           onChange={e => setSearchQuery(e.target.value)}
-            onFocus={() => setShowSuggestions(true)}
-            onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
-         />
-
-         {/* clear-icon */}
-          {searchQuery && (
+          {/* ACTION ICONS */}
+          <div className="flex items-center space-x-6">
+            {/* ========== LOCATION ========== */}
             <div
-              className={styles.clearIcon}
-              onClick={() => setSearchQuery('')}
-           >
-              <FaTimes />
-           </div>
-          )}
-
-          {/* suggestions dropdown */}
-         {showSuggestions && (
-            <ul className={styles.suggestionsDropdown}>
-              {(searchQuery
-                ? trendingSearches.filter(item =>
-                    item
-                     .toLowerCase()
-                      .includes(searchQuery.toLowerCase())
-                  )
-                : trendingSearches
-              ).map(term => (
-                <li
-                  key={term}
-                  className={styles.suggestionItem}
-                  onMouseDown={() => {
-                    setSearchQuery(term);
-                    setShowSuggestions(false);
-                  }}
+              className="relative"
+              onMouseEnter={() => setShowLocationPopup(true)}
+              onMouseLeave={(e) => {
+                if (popupRef.current?.contains(e.relatedTarget)) return;
+                setShowLocationPopup(false);
+              }}
+            >
+              <FaMapMarkerAlt className="w-5 h-5 text-gray-700" />
+              {showLocationPopup && (
+                <div
+                  ref={popupRef}
+                  className="absolute right-0 mt-2 w-56 bg-white p-4 rounded shadow-lg z-30"
                 >
-                  {term}
-                </li>
-              )
-            )
-          
-          }
-          
-            </ul>
-          )}
-        </form>
-
-        {/* Action icons */}
-        <div className={styles.actions}>
-          <div
-            className={styles.locationWrapper}
-            onMouseEnter={() => setShowLocationPopup(true)}
-            onMouseLeave={(e) => {
-              // if the cursor is moving into the popup itself, don't hide
-              if (popupRef.current && popupRef.current.contains(e.relatedTarget)) return;
-              setShowLocationPopup(false);
-            }}
-          >
-            <FaMapMarkerAlt className={styles.action} />
-            
-            {/* once user submits, show pin & estimate */}
-            {locationPin && (
-              <div className={styles.locationInfo}>
-                <span className={styles.locationText}>{locationPin}</span>
-                <span className={styles.estimateText}>
-                  Est. Delivery {deliveryEstimate}
-                </span>
-              </div>
-            )}
-
-            {/* hover-popup form */}
-               {showLocationPopup && (
-              <div ref={popupRef} className={styles.locationPopup}>
                   {!locationPin ? (
-                  /* First time entry form */
+                    /* first-time form */
                     <form
                       onSubmit={(e) => {
                         e.preventDefault();
@@ -227,12 +188,17 @@ export default function Header({ logoSrc, cartCount = 3 }) {
                         placeholder="Enter Pincode"
                         value={enteredPin}
                         onChange={(e) => setEnteredPin(e.target.value)}
-                        className={styles.locationInput}
+                        className="w-full border rounded px-2 py-1 mb-2"
                       />
-                      <button type="submit">Enter</button>
+                      <button
+                        type="submit"
+                        className="w-full bg-purple-600 text-white py-1 rounded"
+                      >
+                        Submit
+                      </button>
                     </form>
                   ) : (
-                    /* Change-pincode form */
+                    /* change pin form */
                     <form
                       onSubmit={(e) => {
                         e.preventDefault();
@@ -243,223 +209,190 @@ export default function Header({ logoSrc, cartCount = 3 }) {
                         setShowLocationPopup(false);
                       }}
                     >
-                      <div className={styles.changeHeader}>
-                        <span>Current: {locationPin}</span>
-                        <span>Est. Delivery: {deliveryEstimate}</span>
+                      <div className="mb-2 text-sm text-gray-600">
+                        Current: {locationPin} <br />
+                        Est. Delivery: {deliveryEstimate}
                       </div>
                       <input
                         type="text"
                         placeholder="New Pincode"
                         value={enteredPin}
                         onChange={(e) => setEnteredPin(e.target.value)}
-                        className={styles.locationInput}
+                        className="w-full border rounded px-2 py-1 mb-2"
                       />
-                      <button type="submit">Update</button>
+                      <button
+                        type="submit"
+                        className="w-full bg-purple-600 text-white py-1 rounded"
+                      >
+                        Update
+                      </button>
                     </form>
                   )}
-              </div>
-            )}
-          </div>
-          <div
-  className={`${styles.userIconWrapper} ${styles.action}`}
-  onMouseEnter={() => setShowSignupPopup(true)}
-  onMouseLeave={() => setShowSignupPopup(false)}
->
-  {isLoggedIn && userPhoto ? (
-    <Image
-      src={userPhoto}
-      alt="User"
-      width={32}
-      height={32}
-      className={styles.userPhoto}
-    />
-  ) : (
-    <FaUser className={styles.action} />
-  )}
-
-  {showSignupPopup && !isLoggedIn && (
-    <div className={styles.loginPopup}>
-      {/* Tabs */}
-      <div className={styles.loginTabs}>
-        <button
-          className={loginMethod === 'otp' ? styles.activeTab : ''}
-          onClick={() => setLoginMethod('otp')}
-        >
-          OTP Login
-        </button>
-        <button
-          className={loginMethod === 'password' ? styles.activeTab : ''}
-          onClick={() => setLoginMethod('password')}
-        >
-          ID/Password
-        </button>
-      </div>
-
-      {/* OTP form */}
-      {loginMethod === 'otp' ? (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            // simulate successful OTP login
-            setIsLoggedIn(true);
-            setUserPhoto(sampleUserPhoto);
-            setLocalCartCount(localCartCount + 1); // bump cart count
-            setShowSignupPopup(false);
-          }}
-        >
-          <input
-            type="tel"
-            placeholder="Mobile number"
-            value={mobileInput}
-            onChange={(e) => setMobileInput(e.target.value)}
-            className={styles.loginInput}
-          />
-          <button type="submit" className={styles.loginButton}>
-            Login via OTP
-          </button>
-        </form>
-      ) : (
-        /* ID/password form */
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            // simulate successful ID/password login
-            setIsLoggedIn(true);
-            setUserPhoto(sampleUserPhoto);
-            setLocalCartCount(localCartCount + 1);
-            setShowSignupPopup(false);
-          }}
-        >
-          <input
-            type="text"
-            placeholder="Username or Email"
-            value={idInput}
-            onChange={(e) => setIdInput(e.target.value)}
-            className={styles.loginInput}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={pwInput}
-            onChange={(e) => setPwInput(e.target.value)}
-            className={styles.loginInput}
-          />
-          <button type="submit" className={styles.loginButton}>
-            Login
-          </button>
-        </form>
-      )}
-    </div>
-  )}
-            {showSignupPopup && isLoggedIn && (
-              <div className={styles.profilePopup}>
-                <div className={styles.profileHeader}>
-                  <Image
-                    src={userPhoto}
-                    alt="User"
-                    width={40}
-                    height={40}
-                    className={styles.userPhoto}
-                  />
-                  <div>
-                    <p className={styles.profileName}>Doni Singh Agrawal</p>
-                    <p className={styles.profileType}>Cat Owner Meow meow</p>
-                  </div>
                 </div>
-                <ul className={styles.profileOptions}>
-                  <li><button type="button">Change Address</button></li>
-                  <li><button type="button">Buy from Categories</button></li>
-                  <li><button type="button">Your Orders</button></li>
-                  <li><button type="button">Track Your Order</button></li>
-                  <li><button type="button">Settings</button></li>
-                  <li><button type="button">Change Theme</button></li>
-                  <li><button type="button">Sign Out</button></li>
-                </ul>
-              </div>
-            )}
-          </div>
-
-          <div
-          className={styles.cartWrapper}
-          onMouseEnter={() => setShowCartPopup(true)}
-          onMouseLeave={() => setShowCartPopup(false)}
-        >
-          <FaShoppingCart className={styles.action} />
-          <span className={styles.cartCount}>{localCartCount}</span>
-
-          {showCartPopup && (
-            <div className={styles.cartPopup}>
-              {showCelebration && (
-                <div className={styles.confetti}>🎉✨🎉</div>
               )}
-              <ul className={styles.cartItems}>
-                {cartItems.map(item => (
-                  <li key={item.id} className={styles.cartItem}>
-                    <img src={item.img} alt={item.name} />
-                    <div>
-                      <p className={styles.itemName}>{item.name}</p>
-                      <p className={styles.itemPrice}>₹{item.price}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <div className={styles.cartTotal}>
-                <span>Subtotal:</span>
-                <span>₹{subtotal}</span>
-              </div>
-              <div className={styles.promoSection}>
-                <input
-                  type="text"
-                  placeholder="Promo code"
-                  value={promoCode}
-                  onChange={e => setPromoCode(e.target.value)}
-                  className={styles.promoInput}
-                />
-                <button
-                  type="button"
-                  className={styles.promoButton}
-                  onClick={() => {
-                    if (promoCode === '123' && !isPromoApplied) {
-                      setDiscount(0.1);
-                      setIsPromoApplied(true);
-                      setShowCelebration(true);
-                    }
-                  }}
-                >
-                  Apply
-                </button>
-              </div>
-              <div className={styles.cartTotal}>
-                <span>Total:</span>
-                <span>₹{total}</span>
-              </div>
-              <Link href="/checkout" passHref>
-                <button className={styles.checkoutButton}>
-                  Checkout
-                </button>
-              </Link>
-              <div className={styles.addressSection}>
-                {locationPin ? (
-                  <p>Pincode: {locationPin}</p>
-                ) : (
-                  <button
-                    type="button"
-                    className={styles.changePinButton}
-                    onClick={() => setShowLocationPopup(true)}
-                  >
-                    Add Pincode
-                  </button>
-                )}
-              </div>
             </div>
-          )}
+
+            {/* ========== PROFILE ========== */}
+            <div className="relative">
+              {user ? (
+                <>
+                  <button
+                  onClick={() => setShowProfilePopup(p => !p)}
+                  className="flex items-center space-x-2"
+                  >
+                    {/*  ❗ user image intentionally skipped to avoid src-undefined errors */}
+                    <FaUser className="w-5 h-5 text-gray-700" />
+                    <span className="font-medium">{user.name}</span>
+                  </button>
+                  {showProfilePopup && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded shadow-lg z-30 py-2">
+                      <Link
+                        href="/profile"
+                        className="block px-4 py-2 hover:bg-gray-100"
+                      >
+                        My Profile
+                      </Link>
+                      <Link
+                        href="/profile?tab=referral"
+                        className="block px-4 py-2 hover:bg-gray-100"
+                      >
+                        Send Referral
+                      </Link>
+                      <Link
+                        href="/profile?tab=password"
+                        className="block px-4 py-2 hover:bg-gray-100"
+                      >
+                        Change Password
+                      </Link>
+                      <Link
+                        href="/profile?tab=address"
+                        className="block px-4 py-2 hover:bg-gray-100"
+                      >
+                        Change Address
+                      </Link>
+                      <button
+                        onClick={logout}
+                        className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                      >
+                        Sign Out
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <Link href="/login">
+                  <FaUser className="w-5 h-5 text-gray-700" />
+                </Link>
+              )}
+            </div>
+
+            {/* ========== CART ========== */}
+            <div className="relative">
+              <button
+                onClick={() => setShowCartPopup((prev) => !prev)}
+                className="relative"
+              >
+                <FaShoppingCart className="w-5 h-5 text-gray-700" />
+                {cart.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {cart.length}
+                  </span>
+                )}
+              </button>
+
+              {showCartPopup && (
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded shadow-lg z-30 p-4">
+                  {showCelebration && (
+                    <div className="text-center text-xl mb-2">🎉✨🎉</div>
+                  )}
+                  {cart.length === 0 ? (
+                    <p className="text-center text-gray-500">
+                      Your cart is empty
+                    </p>
+                  ) : (
+                    <>
+                      <ul className="space-y-4 max-h-64 overflow-auto">
+                        {cart.map((item) => (
+                          <li
+                            key={item.product._id}
+                            className="flex items-center"
+                          >
+                            {item.product.imageUrl && (
+                              <Image
+                                src={item.product.imageUrl}
+                                alt={item.product.name}
+                                width={48}
+                                height={48}
+                                className="object-cover rounded"
+                              />
+                            )}
+                            <div className="ml-3 flex-1">
+                              <p className="font-medium">
+                                {item.product.name}
+                              </p>
+                              <p className="text-sm">Qty: {item.qty}</p>
+                            </div>
+                            <p className="font-semibold">
+                              ₹{item.qty * item.product.price}
+                            </p>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className="mt-4">
+                        <div className="flex justify-between">
+                          <span>Subtotal:</span>
+                          <span>₹{subtotal.toFixed(2)}</span>
+                        </div>
+                        <div className="mt-2">
+                          <input
+                            type="text"
+                            placeholder="Promo code"
+                            value={promoCode}
+                            onChange={(e) => setPromoCode(e.target.value)}
+                            className="w-full border rounded px-2 py-1"
+                          />
+                          <button
+                            onClick={() => {
+                              if (!discount && promoCode) {
+                                setDiscount(0.1);
+                                setShowCelebration(true);
+                              }
+                            }}
+                            className="w-full bg-blue-600 text-white py-1 rounded mt-2"
+                          >
+                            Apply
+                          </button>
+                        </div>
+                        {discount > 0 && (
+                          <div className="flex justify-between text-sm text-green-600 mt-2">
+                            <span>Discount:</span>
+                            <span>
+                              -₹{(subtotal * discount).toFixed(2)}
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex justify-between font-bold mt-2">
+                          <span>Total:</span>
+                          <span>₹{total.toFixed(2)}</span>
+                        </div>
+                        <Link href="/checkout">
+                          <button className="w-full bg-green-600 text-white py-2 rounded mt-4">
+                            Checkout
+                          </button>
+                        </Link>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-        </div>
-      </div>
-    </header>
-       {/* NavMenu now scrolls away with the page */}
-      {navVisible && <NavMenu />}
-          </>
+
+        {/* NavMenu */}
+        {navVisible && <NavMenu />}
+      </header>
+    </>
   );
 }
-

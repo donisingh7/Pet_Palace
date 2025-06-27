@@ -4,6 +4,12 @@ const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 8);
 
 const UserSchema = new mongoose.Schema({
   // … existing fields …
+  name: String,
+  phone: String,
+  password: String,
+  referralCode: String,
+  // …
+  photoUrl: { type: String, default: '/default-avatar.png' },
   referralCode: {
     type: String,
     unique: true,

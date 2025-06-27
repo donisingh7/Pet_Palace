@@ -65,19 +65,24 @@ async function seed() {
       isGuest: false,
       walletCoins: 0,
       referredBy: null,
-      cart: []
+      cart: [],
+      photourl:'../../client/public.doni.jpeg'
     },{ name:'Alice', referralCode:'ALICE123', phone: "8769388932",
       password: "doni123",  // prototype ke liye, hash karna optional
       isGuest: false,
       walletCoins: 0,
       referredBy: null,
-      cart: []},
+      cart: [],
+      photourl:'../../client/public.doni.jpeg'
+    },
     { name:'Bob',   referralCode:'BOB456', phone: "8769388932",
       password: "doni123",  // prototype ke liye, hash karna optional
       isGuest: false,
       walletCoins: 0,
       referredBy: null,
-      cart: []}  ];
+      cart: [],
+      photourl:'../../client/public.doni.jpeg'
+    }  ];
 
   // 5) Insert into DB
   const p = await Product.insertMany(products);

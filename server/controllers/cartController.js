@@ -28,9 +28,9 @@ exports.addToCart = async (req, res) => {
 exports.getCart = async (req, res) => {
   try {
     const { userId } = req.query;
-    // Populate product details inside cart
-    const user = await User.findById(userId).populate('cart.product');
-    return res.status(200).json(user.cart);
+    if (!userId) {
+      // Send back an empty cart instead of crashing
+      return res.json([]);}
   } catch (err) {
     console.error('CartController.getCart error:', err);
     return res.status(500).json({ error: 'Fetch cart failed' });

@@ -1,51 +1,71 @@
-// server/controllers/orderController.js
-
 const mongoose = require('mongoose');
-const User     = require('../models/User');
-const Doctor   = require('../models/Doctor');
-const Order    = require('../models/Order');
+const User = require('../models/User');
+const Order = require('../models/Order');
 
 exports.checkout = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
-  try {
-    const { userId } = req.body;
-    // 1. User और cart details ले आओ
-    const user = await User.findById(userId)
-      .populate('cart.product referredBy')
-      .session(session);
 
-    // 2. Subtotal, discount, total compute करो
+  try {
+    const { userId, referralCode } = req.body;
+
+    // Fetch user & cart
+    const user = await User.findById(userId)
+      .populate('cart.product')
+      .session(session);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // Find referrer
+    const referrer = referralCode
+      ? await User.findOne({ referralCode }).session(session)
+      : null;
+
+    const canUseReferral = referrer && !user.referredBy && !referrer._id.equals(user._id);
+
+    // Calculate subtotal
     let subtotal = 0;
     user.cart.forEach(item => {
       subtotal += item.qty * item.product.price;
     });
-    const discount = user.referredBy ? subtotal * 0.10 : 0;
+
+    const discount = canUseReferral ? subtotal * 0.10 : 0;
     const total = subtotal - discount;
 
-    // 3. Order create करो
-    const order = await Order.create([{
-      user: user._id,
-      doctor: user.referredBy?._id || null,
-      items: user.cart.map(item => ({
-        product: item.product._id,
-        qty: item.qty,
-        priceAtPurchase: item.product.price
-      })),
-      subtotal, discount, total
-    }], { session });
+    // Apply referral
+    if (canUseReferral) {
+      user.referredBy = referrer._id;
+      await user.save({ session });
+    }
 
-    // 4. Doctor को reward दो
-    if (user.referredBy) {
-   await User.findByIdAndUpdate(
-     user.referredBy,
-     { $inc: { walletCoins: subtotal * 0.05 } },
-     { session }
-   );
- }
+    // Create order
+    const order = await Order.create(
+      [
+        {
+          user: user._id,
+          items: user.cart.map(it => ({
+            product: it.product._id,
+            qty: it.qty,
+            priceAtPurchase: it.product.price
+          })),
+          subtotal,
+          discount,
+          total,
+          usedReferral: canUseReferral,
+          referralUsedBy: canUseReferral ? referrer._id : null
+        }
+      ],
+      { session }
+    );
 
-    // 5. User.cart clear करो
-    await User.findByIdAndUpdate(userId, { cart: [] }, { session });
+    // Give coins: 10% to buyer, 10% to referrer
+    if (canUseReferral) {
+      const coinAmount = subtotal * 0.10;
+      await User.findByIdAndUpdate(user._id, { $inc: { walletCoins: coinAmount } }, { session });
+      await User.findByIdAndUpdate(referrer._id, { $inc: { walletCoins: coinAmount } }, { session });
+    }
+
+    // Clear cart
+    await User.findByIdAndUpdate(user._id, { cart: [] }, { session });
 
     await session.commitTransaction();
     session.endSession();
