@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
 
   // Login (mock OTP): send phone, get/create user
   const login = async (phone) => {
-    const res = await fetch('/api/auth/login', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone })
@@ -59,7 +59,7 @@ export function AuthProvider({ children }) {
   // Update profile
   const updateProfile = async (profileData) => {
     const payload = { ...profileData, userId: user.id };
-    const res = await fetch('/api/user/update-profile', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/update-profile`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)

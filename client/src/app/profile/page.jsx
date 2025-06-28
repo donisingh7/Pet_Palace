@@ -1,9 +1,12 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import ProfileModal from '../../components/ProfileModal';
 
 export default function ProfilePage() {
   const { user } = useAuth();
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showReferralPopup, setShowReferralPopup] = useState(false);
 
   if (!user) {
     return (
@@ -22,88 +25,108 @@ export default function ProfilePage() {
     );
   }
 
+  // Helper to calculate age in years
+  const calculateAge = (dateString) => {
+    if (!dateString) return null;
+    const diffMs = Date.now() - new Date(dateString).getTime();
+    return Math.floor(diffMs / (1000 * 60 * 60 * 24 * 365));
+  };
+
+  // Compute profile completion
+  const fields = [
+    user.name,
+    user.dob,
+    user.email,
+    user.address,
+    user.phone,
+    user.pet?.type,
+    user.pet?.name,
+    user.pet?.dob,
+    user.pet?.breed
+  ];
+  const filledCount = fields.filter((f) => f).length;
+  const completion = Math.round((filledCount / 9) * 100);
+
   return (
-    <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
-      <div className="bg-white shadow-2xl rounded-3xl p-8 w-full max-w-2xl transition-transform transform hover:scale-102">
-        <h1 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">
-          Your Profile
-        </h1>
+    <>
+      <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
+        <div className="bg-white shadow-2xl rounded-3xl p-8 w-full max-w-2xl transition-transform transform hover:scale-102">
+          <h1 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">
+            Your Profile
+          </h1>
 
-        <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
-          <div className="relative">
-            {user.photoUrl ? (
-              <img
-                src={user.photoUrl}
-                alt={user.name}
-                className="w-32 h-32 rounded-full object-cover ring-4 ring-indigo-500"
-              />
-            ) : (
-              <div className="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center text-5xl text-gray-500 ring-4 ring-indigo-500">
-                {user.name.charAt(0).toUpperCase()}
-              </div>
-            )}
-          </div>
-
-          <div className="flex-1 space-y-3">
-            <p className="text-gray-700">
-              <span className="font-semibold">Name:</span> {user.name}
+          {/* Profile completion bar */}
+          <div className="mb-6">
+            <p className="text-gray-700 mb-2 font-semibold">
+              Profile Completion: {completion}%
             </p>
-            {user.phone && (
-              <p className="text-gray-700">
-                <span className="font-semibold">Mobile:</span> {user.phone}
-              </p>
-            )}
-            {user.email && (
-              <p className="text-gray-700">
-                <span className="font-semibold">Email:</span> {user.email}
-              </p>
-            )}
-            {user.dob && (
-              <p className="text-gray-700">
-                <span className="font-semibold">DOB:</span>{' '}
-                {new Date(user.dob).toLocaleDateString()}
-              </p>
-            )}
-            {user.address && (
-              <p className="text-gray-700">
-                <span className="font-semibold">Address:</span> {user.address}
-              </p>
-            )}
-            {typeof user.walletCoins === 'number' && (
-              <p className="text-gray-700">
-                <span className="font-semibold">Wallet Coins:</span> {user.walletCoins}
-              </p>
-            )}
-            {user.referralCode && (
-              <p className="text-gray-700">
-                <span className="font-semibold">Referral Code:</span>{' '}
-                <span className="font-mono">{user.referralCode}</span>
-              </p>
-            )}
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className="bg-indigo-600 h-2 rounded-full"
+                style={{ width: `${completion}%` }}
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <a
-            href="/profile?tab=referral"
-            className="block text-center px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md transition"
-          >
-            📩 Send Referral
-          </a>
-          <a
-            href="/profile?tab=password"
-            className="block text-center px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md transition"
-          >
-            🔒 Change Password
-          </a>
-          <a
-            href="/profile?tab=address"
-            className="block text-center px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md transition"
-          >
-            🏠 Change Address
-          </a>
+          {/* Profile details */}
+          <ul className="space-y-2 text-gray-700">
+            <li><strong>Name:</strong> {user.name || '-'}</li>
+            <li><strong>Age:</strong> {calculateAge(user.dob) ?? '-'} years</li>
+            <li><strong>Email:</strong> {user.email || '-'}</li>
+            <li><strong>Address:</strong> {user.address || '-'}</li>
+            <li><strong>Mobile:</strong> {user.phone || '-'}</li>
+            <li><strong>Pet Type:</strong> {user.pet?.type || '-'}</li>
+            <li><strong>Pet Name:</strong> {user.pet?.name || '-'}</li>
+            <li><strong>Pet Age:</strong> {calculateAge(user.pet?.dob) ?? '-'} years</li>
+            <li><strong>Pet Breed:</strong> {user.pet?.breed || '-'}</li>
+          </ul>
+
+          {/* Action buttons */}
+          <div className="mt-8 flex space-x-4">
+            <button
+              onClick={() => setShowReferralPopup(true)}
+              className="flex-1 text-center px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md transition"
+            >
+              📩 Send Referral
+            </button>
+            <button
+              onClick={() => setShowProfileModal(true)}
+              className="flex-1 text-center px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md transition"
+            >
+              ✏️ Edit Profile
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Profile Modal for editing */}
+      {showProfileModal && (
+        <ProfileModal onClose={() => setShowProfileModal(false)} />
+      )}
+
+      {/* Referral Popup */}
+      {showReferralPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="relative bg-white rounded-lg p-6 w-full max-w-sm text-center">
+            <button
+              onClick={() => setShowReferralPopup(false)}
+              className="absolute top-3 right-3 text-gray-600 hover:text-gray-800"
+            >
+              ✕
+            </button>
+            <p className="text-lg font-medium mb-4">Your Referral Code</p>
+            <div className="flex items-center justify-center space-x-2 mb-4">
+              <span className="font-mono text-indigo-600">{user.referralCode}</span>
+              <button
+                onClick={() => navigator.clipboard.writeText(user.referralCode)}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white py-1 px-3 rounded transition"
+              >
+                Copy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

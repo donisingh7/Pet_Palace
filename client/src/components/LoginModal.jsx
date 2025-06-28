@@ -9,7 +9,7 @@ export default function LoginModal({ onClose }) {
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
 
-  const handleSendOtp = () => {
+  const handleSendOtp = () => { 
     if (!phone) return setError('Please enter phone number');
     setError('');
     setStep(2);

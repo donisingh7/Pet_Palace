@@ -43,8 +43,8 @@ export default function BannerSlider({
         <Image
           src={images[idx]}
           alt={`Banner ${idx + 1}`}
-          layout="fill"
-          objectFit="cover"
+          fill                        
+          style={{ objectFit: 'cover' }}
           priority={idx === 0}
         />
       </div>
