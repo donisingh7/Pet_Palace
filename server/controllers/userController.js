@@ -1,5 +1,3 @@
-// server/controllers/userController.js
-
 const mongoose = require('mongoose');
 const User = require('../models/User');
 
@@ -23,7 +21,7 @@ exports.claimReferral = async (req, res) => {
     await user.save({ session });
 
     // Reward both users
-    const rewardAmount = 10; // for example, giving 10 coins each
+    const rewardAmount = 10; // example reward coins
     await Promise.all([
       User.findByIdAndUpdate(user._id, { $inc: { walletCoins: rewardAmount } }, { session }),
       User.findByIdAndUpdate(referrer._id, { $inc: { walletCoins: rewardAmount } }, { session })
@@ -45,5 +43,24 @@ exports.claimReferral = async (req, res) => {
     const status = err.status || 500;
     const message = err.message || 'Failed to claim referral';
     return res.status(status).json({ error: message });
+  }
+};
+
+// Update user profile
+exports.updateProfile = async (req, res) => {
+  try {
+    const { userId, name, dob, email, address, photoUrl, pet } = req.body;
+    const updated = await User.findByIdAndUpdate(
+      userId,
+      { name, dob, email, address, photoUrl, pet },
+      { new: true }
+    );
+    if (!updated) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+    return res.json({ success: true, user: updated });
+  } catch (err) {
+    console.error('updateProfile error:', err);
+    return res.status(500).json({ success: false, error: 'Profile update failed' });
   }
 };

@@ -1,10 +1,12 @@
 const express = require('express');
 const router  = express.Router();
-const authController = require('../controllers/authController');
-const { createGuestUser } = require('../controllers/authController');
+const { login, createGuestUser } = require('../controllers/authController');
 
-// POST /api/auth/guest → createGuestUser()
+// Mock login/signup via phone
+router.post('/login', login);
+
+// Create a guest user if needed
 router.post('/guest', createGuestUser);
-router.post('/login', authController.login);
 
 module.exports = router;
+                                                                                                                                                                                                    

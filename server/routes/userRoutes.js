@@ -1,11 +1,12 @@
-// server/routes/userRoutes.js
-
 const express = require('express');
-const { claimReferral } = require('../controllers/userController');
-
+const { claimReferral, updateProfile } = require('../controllers/userController');
 const router = express.Router();
 
-// Claim referral code and reward both users
+// Claim referral code
 router.post('/referral/claim', claimReferral);
 
+// Update user profile (add/edit)
+router.put('/update-profile', updateProfile);
+
 module.exports = router;
+    

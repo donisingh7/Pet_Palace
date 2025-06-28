@@ -1,87 +1,70 @@
+// File: src/app/login/page.jsx
 'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
 
 export default function LoginPage() {
-  const [phoneInput, setPhoneInput] = useState('');      // <-- renamed
-  const [passwordInput, setPasswordInput] = useState(''); // <-- renamed
+  const [phoneInput, setPhoneInput] = useState('');
   const [error, setError] = useState('');
-  const router = useRouter();
   const [success, setSuccess] = useState(false);
-  const { login } = useAuth();   // ← get login()
+  const router = useRouter();
+  const { login } = useAuth();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // use the exact state variable names here:
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          phone: phoneInput,      // <-- match phoneInput
-          password: passwordInput // <-- match passwordInput
-        }),
-      }
-    );
-    const data = await res.json();
-    if (!res.ok) {
-      setError(data.error || 'Login failed');
-      return;
+    setError('');
+    try {
+      await login(phoneInput); // Mock OTP login
+      setSuccess(true);
+      setTimeout(() => router.push('/'), 2000);
+    } catch (err) {
+      setError(err.message);
     }
-    // on success, store and redirect
-    login(data);
-    router.push('/');
-
-    setSuccess(true);
-    setTimeout(() => {
-    router.push('/');
-  }, 3000);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center p-6">
       <form
         onSubmit={handleSubmit}
-        className="bg-white shadow rounded p-6 w-full max-w-sm"
+        className="bg-white shadow-2xl rounded-3xl p-8 w-full max-w-md transition-transform transform hover:scale-105"
       >
-        <h1 className="text-2xl font-bold mb-4">Login</h1>
-        {error && <div className="text-red-600 mb-2">{error}</div>}
+        <h1 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">
+          Sign In
+        </h1>
 
-        <label className="block mb-4">
-          <span className="text-gray-700">Mobile</span>
-          <input
-            type="text"
-            placeholder="Enter mobile number"
-            value={phoneInput}
-            onChange={(e) => setPhoneInput(e.target.value)}
-            className="mt-1 block w-full border rounded p-2"
-          />
-        </label>
-
-        <label className="block mb-4">
-          <span className="text-gray-700">Password</span>
-          <input
-            type="password"
-            placeholder="Enter password"
-            value={passwordInput}
-            onChange={(e) => setPasswordInput(e.target.value)}
-            className="mt-1 block w-full border rounded p-2"
-          />
-        </label>
-        {success && (
-          <div className="bg-green-100 text-green-800 p-3 mb-4 rounded">
-            Successfully logged in!
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
           </div>
         )}
 
+        {success && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            Successfully logged in! Redirecting...
+          </div>
+        )}
+
+        <div className="mb-4">
+          <label className="block text-gray-700 mb-1">Mobile Number</label>
+          <input
+            type="text"
+            placeholder="Enter your phone"
+            value={phoneInput}
+            onChange={(e) => setPhoneInput(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+            required
+          />
+        </div>
+
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg shadow-md transition"
         >
-          Log In
+          Continue
         </button>
       </form>
     </div>
   );
 }
+

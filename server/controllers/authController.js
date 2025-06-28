@@ -1,41 +1,46 @@
 const User = require('../models/User');
-const bcrypt = require('bcryptjs');
 
+// OTP skip karte hue simple phone-based login/signup
 exports.login = async (req, res) => {
-  const { phone, password } = req.body;
-  if (!phone || !password) {
-    return res.status(400).json({ error: 'Mobile and password required' });
-  }
+  try {
+    const { phone } = req.body;
+    if (!phone) {
+      return res.status(400).json({ error: 'Phone number required' });
+    }
 
-  const user = await User.findOne({ phone });
-  if (!user || user.password !== password) {
-    return res.status(401).json({ error: 'Invalid creds' });
-  }
+    // Pehle check karo existing user
+    let user = await User.findOne({ phone });
+    if (!user) {
+      // Naya signup
+      user = await User.create({ phone });
+    }
 
-  const match = password === user.password;
-  if (!match) {
-    return res.status(401).json({ error: 'Invalid credentials' });
+    // Always succeed (mock OTP)
+    return res.json({
+      success: true,
+      user: {
+        userId: user._id,
+        name: user.name,
+        phone: user.phone,
+        email: user.email,
+        dob: user.dob,
+        address: user.address,
+        photoUrl: user.photoUrl,
+        pet: user.pet,
+        referralCode: user.referralCode,
+        walletCoins: user.walletCoins
+      }
+    });
+  } catch (err) {
+    console.error('AuthController.login error:', err);
+    return res.status(500).json({ success: false, error: 'Login/signup failed' });
   }
-
-  // Respond with minimal user info
-  return res.json({
-    userId: user._id,
-    name: user.name,
-    mobile: user.phone,
-    email: user.email,           // if applicable
-    imageUrl: user.photoUrl,     // ensure this exists
-    referralCode: user.referralCode,
-    walletCoins: user.walletCoins
-  });
 };
 
-// 1. Guest user create karne ka function
+// Guest user create karne ka function (optional)
 exports.createGuestUser = async (req, res) => {
   try {
-    // new user document बिना कोई field भेजे बना दो
     const user = await User.create({});
-
-    // front-end को userId भेज दो
     return res.status(201).json({ userId: user._id });
   } catch (err) {
     console.error('AuthController.createGuestUser error:', err);
